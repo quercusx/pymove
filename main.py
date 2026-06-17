@@ -30,6 +30,7 @@ Copyright (c) 2025 quercusx
 import argparse
 import queue
 import subprocess
+import sys
 import threading
 import win32api
 import win32con
@@ -70,6 +71,17 @@ def main():
                         help="Shut down the computer after the runtime (-t) expires")
     parser.add_argument("-f", "--force", action="store_true",
                         help="Force shutdown without waiting for running processes (use with -s)")
+
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(0)
+
+    def _error(message):
+        parser.print_help()
+        print(f"\nerror: {message}", file=sys.stderr)
+        sys.exit(2)
+    parser.error = _error
+
     args = parser.parse_args()
 
     start = time.monotonic()
